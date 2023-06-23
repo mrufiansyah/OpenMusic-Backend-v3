@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 // mengimpor dotenv dan menjalankan konfigurasinya
 require('dotenv').config();
 
@@ -28,6 +29,10 @@ const PlaylistValidator = require('./validator/playlist');
 const collaborations = require('./api/collaborations');
 const CollaborationsService = require('./services/postgres/CollaborationsService');
 const CollaborationsValidator = require('./validator/collaborations');
+
+const _exports = require('./api/exports');
+const ProducerService = require('./services/rabbitmq/ProducerService');
+const ExportsValidator = require('./validator/exports');
 
 const ClientError = require('./exceptions/ClientError');
 
@@ -116,6 +121,14 @@ const init = async () => {
         playlistsService,
         collaborationsService,
         validator: CollaborationsValidator,
+      },
+    },
+    {
+      plugin: _exports,
+      options: {
+        service: ProducerService,
+        validator: ExportsValidator,
+        PlaylistsService,
       },
     },
   ]);
